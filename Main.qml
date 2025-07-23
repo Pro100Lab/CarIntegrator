@@ -1,91 +1,138 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-
+import DeviceNS 1.0
 // 1. Выберите и импортируйте нужный стиль (один из вариантов)
-import QtQuick.Controls.Material  // Material Design
+import QtQuick.Controls.Material
+import QtQuick.Controls.Fusion
+
+// Material Design
 // Или: import QtQuick.Controls.Fusion
 // Или: import QtQuick.Controls.Universal
-
 ApplicationWindow {
     id: mw
     width: 640
     height: 480
     visible: true
-    title: qsTr("Hello World")
+    title: qsTr("CarIntegrator")
 
     // 2. Установите стиль для всего приложения
     Component.onCompleted: {
         // Для Material:
-        Material.theme = Material.Light
-        Material.accent = Material.Blue
+        // Material.theme = Material.Light
+        // Material.accent = Material.Blue
 
         // Или для Fusion:
-        // Application.style = "Fusion"
+        Application.style = "Fusion"
     }
 
-    ColumnLayout {
+    GridLayout {
+        columns: 6
+        rows: 4
         anchors.fill: parent
-        anchors.margins: 40
 
-        Repeater
-        {
-            model: [
-                {
-                    text: "1"
-                },
-                {
-                    text: "2"
-                },
-                {
-                    text: "3"
-                },
-                {
-                    text: "4"
-                },
-                {
-                    text: "5"
-                }
-            ]
+        ColumnLayout {
+            Layout.columnSpan: 3
+            Layout.rowSpan: 4
+            Layout.margins: 20
+            Layout.alignment: Qt.AlignTop
 
+            Rectangle {
+                Layout.fillHeight: true
+                Layout.fillWidth: true
 
-            Button {
-                id: fancyButton
-                Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
-                Layout.preferredWidth: 90
-                onClicked: debugHelper.pingDebug(modelData.text)
-                text: modelData.text
+                color: "white"
 
-                // 3. Явно отключаем нативный стиль
-                property bool __customBackground: true  // Ключевая строка!
+                Column {
+                    Text {
+                        text: "Об устройстве"
+                    }
 
-                background: Rectangle {
-                    id: bg
-                    radius: 10
-                    color: "#4facfe"
+                    Row {
+                        Text {
+                            text: "IP Adress:"
+                        }
 
-                    // Имитация тени
-                    Rectangle {
-                        anchors.fill: parent
-                        anchors.margins: -2
-                        radius: 10
-                        color: "#60000000"
-                        z: -1
+                        Item {
+                            Layout.fillWidth: true
+                        }
+
+                        Text {
+                            text: "127.0.0.1"
+                        }
+                    }
+
+                    Row {
+                        Text {
+                            text: "Название устройства: "
+                        }
+
+                        Item {
+                            Layout.fillWidth: true
+                        }
+
+                        Text {
+                            text: deviceState.deviceInfo.name
+                        }
+                    }
+
+                    Row {
+                        Text {
+                            text: "Статус устройства: "
+                        }
+
+                        Item {
+                            Layout.fillWidth: true
+                        }
+
+                        Text {
+                            text: deviceState.deviceStatus.description
+                        }
                     }
                 }
+            }
 
-                // Эффект при наведении
-                states: State {
-                    name: "hovered"
-                    when: fancyButton.hovered
-                    PropertyChanges {
-                        target: bg
-                        color: "#6a85b6"
+            Rectangle {
+                color: "white"
+                Layout.fillHeight: true
+                Layout.fillWidth: true
+
+                Column {
+                    Text {
+                        text: "Подключенные устройства"
+                    }
+                    ListView {
+                        id: connectorsListView
+                        model: serviceBus.connectors
+
+                        delegate: Text {
+                            text: modelData
+                        }
+
+                        width: 100
+                        height: 150
                     }
                 }
+            }
+        }
 
-                Behavior on scale { NumberAnimation { duration: 100 } }
-                onPressedChanged: scale = pressed ? 0.95 : 1.0
+        ColumnLayout {
+            Layout.columnSpan: 3
+            Layout.rowSpan: 4
+            Layout.margins: 20
+            Layout.alignment: Qt.AlignTop
+
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Rectangle {
+                Layout.fillHeight: true
+                Layout.fillWidth: true
+
+                color: "white"
+
+                Text {
+                    text: "Виджеты"
+                }
             }
         }
     }

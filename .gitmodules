@@ -1,0 +1,3 @@
+[submodule "libs/device-common"]
+	path = libs/device-common
+	url = https://github.com/Pro100Lab/device-common.git

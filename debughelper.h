@@ -10,6 +10,7 @@ class DebugHelper : public QObject
 public:
     explicit DebugHelper(QObject *parent = nullptr);
 
+public slots:
     Q_INVOKABLE void pingDebug(QString str) {
         qDebug() << "ping: " << str;
     }

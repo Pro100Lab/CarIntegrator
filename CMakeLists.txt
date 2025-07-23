@@ -4,8 +4,7 @@ project(CarIntegrator VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Quick)
-find_package(Qt6 REQUIRED COMPONENTS Core)
+find_package(Qt6 REQUIRED COMPONENTS Core Network Gui Quick)
 
 qt_standard_project_setup(REQUIRES 6.8)
 
@@ -19,6 +18,9 @@ qt_add_qml_module(appCarIntegrator
     QML_FILES
         Main.qml
         SOURCES debughelper.h debughelper.cpp
+        SOURCES servicebus.h servicebus.cpp
+        SOURCES appcore/applicationcore.h appcore/applicationcore.cpp
+        SOURCES
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
@@ -32,12 +34,21 @@ set_target_properties(appCarIntegrator PROPERTIES
     WIN32_EXECUTABLE TRUE
 )
 
+add_subdirectory(libs/device-common)
+
 target_link_libraries(appCarIntegrator
     PRIVATE Qt6::Quick
+    PRIVATE Qt6::Network
+    PRIVATE Qt6::Core
+    PRIVATE device-common
 )
-target_link_libraries(appCarIntegrator PRIVATE Qt6::Core)
+
+target_include_directories(appCarIntegrator
+    PRIVATE libs/device-common/include
+)
 
 include(GNUInstallDirs)
+
 install(TARGETS appCarIntegrator
     BUNDLE DESTINATION .
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
